@@ -1,0 +1,5 @@
+server/bin/
+server/.env
+app/build/
+app/.gradle/
+app/local.properties
