@@ -14,14 +14,21 @@ func Register(c *gin.Context) {
 	var input struct {
 		FirstName string `json:"first_name" binding:"required"`
 		LastName  string `json:"last_name" binding:"required"`
-		Email    string `json:"email" binding:"required,email"`
-		Password string `json:"password" binding:"required,min=6"`
+		Email     string `json:"email" binding:"required,email"`
+		Password  string `json:"password" binding:"required,min=6"`
+		Role      string `json:"role"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Dati non validi: controlla email e password (minimo 6 caratteri)"})
 		return
 	}
+
+	userRole := "user"
+	if input.Role == "shop" {
+		userRole = "shop"
+	}
+
 
 	// criptazione password
 	hashedPassword, err := utils.HashPassword(input.Password)
@@ -33,9 +40,10 @@ func Register(c *gin.Context) {
 	// creazione oggetto utente
 	user := models.User{
 		FirstName: input.FirstName,
-		LastName: input.LastName,
-		Email:    input.Email,
-		Password: hashedPassword,
+		LastName:  input.LastName,
+		Email:     input.Email,
+		Password:  hashedPassword,
+		Role:      userRole,
 	}
 
 	// salviamo, se esiste gia riceviamo errore
@@ -46,8 +54,10 @@ func Register(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Utente registrato con successo",
-		 "email": user.Email,
-		"name": user.FirstName,
+		"email": user.Email,
+		"name":  user.FirstName,
+		"role":  user.Role,
+
 	})
 }
 
