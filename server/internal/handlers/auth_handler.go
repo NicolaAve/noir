@@ -12,6 +12,8 @@ import (
 // funzione per gestire la registrazione
 func Register(c *gin.Context) {
 	var input struct {
+		FirstName string `json:"first_name" binding:"required"`
+		LastName  string `json:"last_name" binding:"required"`
 		Email    string `json:"email" binding:"required,email"`
 		Password string `json:"password" binding:"required,min=6"`
 	}
@@ -30,6 +32,8 @@ func Register(c *gin.Context) {
 
 	// creazione oggetto utente
 	user := models.User{
+		FirstName: input.FirstName,
+		LastName: input.LastName,
 		Email:    input.Email,
 		Password: hashedPassword,
 	}
@@ -40,5 +44,9 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Utente registrato con successo", "email": user.Email})
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Utente registrato con successo",
+		 "email": user.Email,
+		"name": user.FirstName,
+	})
 }
