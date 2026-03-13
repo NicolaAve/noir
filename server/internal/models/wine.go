@@ -8,4 +8,5 @@ type Wine struct {
 	Year     int    `json:"year"`
 	Type     string `json:"type"`     // Rosso, Bianco, ecc.
 	Producer string `json:"producer"`
+	CellarID uint   `json:"cellar_id"`
 }
