@@ -50,3 +50,43 @@ func Register(c *gin.Context) {
 		"name": user.FirstName,
 	})
 }
+
+// verifichiamo credernziali e rilasciamo il pass (jwt)
+func Login(c *gin.Context) {
+	var input struct {
+		Email    string `json:"email" binding:"required,email"`
+		Password string `json:"password" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Dati mancanti o malformati"})
+		return
+	}
+
+	var user models.User
+	
+	// 1. cerchiamo utente tramite mail (unique)
+	if err := repository.DB.Where("email = ?", input.Email).First(&user).Error; err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Credenziali non valide"})
+		return
+	}
+
+	// confronto password con hash nel DB
+	if !utils.CheckPasswordHash(input.Password, user.Password) {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Credenziali non valide"})
+		return
+	}
+
+	// geeriamo il token per il telefono
+	token, err := utils.GenerateToken(user.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Errore durante la generazione del token"})
+		return
+	}
+
+	// consegnamo il token
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Accesso consentito",
+		"token":   token,
+	})
+}

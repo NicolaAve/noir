@@ -22,6 +22,7 @@ func main() {
 	})
 
 	router.POST("/register", handlers.Register)
+	router.POST("/login", handlers.Login)
 
 	log.Println("Avvio server Noir sulla porta :8080...")
 	if err := router.Run(":8080"); err != nil {
