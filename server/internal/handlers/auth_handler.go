@@ -29,7 +29,6 @@ func Register(c *gin.Context) {
 		userRole = "shop"
 	}
 
-
 	// criptazione password
 	hashedPassword, err := utils.HashPassword(input.Password)
 	if err != nil {
@@ -54,10 +53,9 @@ func Register(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Utente registrato con successo",
-		"email": user.Email,
-		"name":  user.FirstName,
-		"role":  user.Role,
-
+		"email":   user.Email,
+		"name":    user.FirstName,
+		"role":    user.Role,
 	})
 }
 
@@ -74,7 +72,7 @@ func Login(c *gin.Context) {
 	}
 
 	var user models.User
-	
+
 	// 1. cerchiamo utente tramite mail (unique)
 	if err := repository.DB.Where("email = ?", input.Email).First(&user).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Credenziali non valide"})

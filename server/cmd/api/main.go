@@ -14,10 +14,10 @@ func main() {
 	repository.Connect()
 
 	router := gin.Default()
-	
+
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"status":  "online", 
+			"status":  "online",
 			"message": "Noir API operativa e connessa al database PostgreSQL",
 		})
 	})
@@ -34,13 +34,13 @@ func main() {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossibile recuperare l'ID utente"})
 				return
 			}
-			
+
 			c.JSON(http.StatusOK, gin.H{
 				"message": "Accesso verificato",
 				"user_id": userID,
 			})
 		})
-        
+
 		protected.POST("/cellars", handlers.CreateCellar)
 		protected.POST("/wines", handlers.AddWine)
 	}

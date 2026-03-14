@@ -1,0 +1,18 @@
+root = true
+
+# regole generali
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# standard per Go (tab al posto di spazi)
+[*.go]
+indent_style = tab
+indent_size = 4
+
+# standard per file di configurazione (2 spazi)
+[*.{json,yml,yaml,md}]
+indent_style = space
+indent_size = 2

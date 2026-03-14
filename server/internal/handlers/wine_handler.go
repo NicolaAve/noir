@@ -19,16 +19,16 @@ func AddWine(c *gin.Context) {
 	uid := uint(userID.(float64))
 
 	var input struct {
-		Name     string  `json:"name" binding:"required"`
-		CellarID uint    `json:"cellar_id" binding:"required"`
-		Quantity int     `json:"quantity"`
-		Producer string  `json:"producer"`
-		Year     int     `json:"year"`
-		Type     string  `json:"type"`
-		Grape    string  `json:"grape"`
-		Rating   int     `json:"rating"`
-		Notes    string  `json:"notes"`
-		ImageURL string  `json:"image_url"`
+		Name     string `json:"name" binding:"required"`
+		CellarID uint   `json:"cellar_id" binding:"required"`
+		Quantity int    `json:"quantity"`
+		Producer string `json:"producer"`
+		Year     int    `json:"year"`
+		Type     string `json:"type"`
+		Grape    string `json:"grape"`
+		Rating   int    `json:"rating"`
+		Notes    string `json:"notes"`
+		ImageURL string `json:"image_url"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -39,7 +39,7 @@ func AddWine(c *gin.Context) {
 	var count int64
 	repository.DB.Table("user_cellars").Where("user_id = ? AND cellar_id = ?", uid, input.CellarID).Count(&count)
 	if count == 0 {
-	
+
 		c.JSON(http.StatusForbidden, gin.H{"error": "Azione non consentita: non hai accesso a questa cantina"})
 		return
 	}
@@ -53,7 +53,7 @@ func AddWine(c *gin.Context) {
 		Name:     input.Name,
 		CellarID: input.CellarID,
 		Quantity: quantity,
-		Status:   "in_stock", 
+		Status:   "in_stock",
 		Producer: input.Producer,
 		Year:     input.Year,
 		Type:     input.Type,
