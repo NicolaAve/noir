@@ -46,3 +46,23 @@ func CreateCellar(c *gin.Context) {
 		"cellar":  cellar,
 	})
 }
+
+func GetMyCellars(c *gin.Context) {
+
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Accesso negato: utente non identificato"})
+		return
+	}
+
+	var user models.User
+
+	if err := repository.DB.Preload("Cellars").First(&user, userID).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Errore durante il recupero delle cantine"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"cellars": user.Cellars,
+	})
+}

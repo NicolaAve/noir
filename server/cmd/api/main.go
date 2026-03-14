@@ -43,6 +43,8 @@ func main() {
 
 		protected.POST("/cellars", handlers.CreateCellar)
 		protected.POST("/wines", handlers.AddWine)
+
+		protected.GET("/cellars", handlers.GetMyCellars)
 	}
 
 	log.Println("Avvio server Noir sulla porta :8080...")
