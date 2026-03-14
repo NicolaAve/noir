@@ -40,7 +40,8 @@ func main() {
 				"user_id": userID,
 			})
 		})
-
+        
+		protected.POST("/cellars", handlers.CreateCellar)
 		protected.POST("/wines", handlers.AddWine)
 	}
 
