@@ -73,3 +73,32 @@ func AddWine(c *gin.Context) {
 		"wine":    wine,
 	})
 }
+
+func GetWinesByCellar(c *gin.Context) {
+
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Accesso negato: utente non identificato"})
+		return
+	}
+	uid := uint(userID.(float64))
+
+	cellarID := c.Param("id")
+
+	var count int64
+	repository.DB.Table("user_cellars").Where("user_id = ? AND cellar_id = ?", uid, cellarID).Count(&count)
+	if count == 0 {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Azione non consentita: non hai accesso a questa cantina"})
+		return
+	}
+
+	var wines []models.Wine
+	if err := repository.DB.Where("status = 'in_stock' AND cellar_id = ?", cellarID).Find(&wines).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Errore durante il recupero dei vini"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"wines": wines,
+	})
+}
