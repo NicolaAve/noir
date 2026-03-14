@@ -40,6 +40,8 @@ func main() {
 				"user_id": userID,
 			})
 		})
+
+		protected.POST("/wines", handlers.AddWine)
 	}
 
 	log.Println("Avvio server Noir sulla porta :8080...")
