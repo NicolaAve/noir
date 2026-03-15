@@ -25,16 +25,16 @@ func AddWine(c *gin.Context) {
 	uid := uint(uidFloat)
 
 	var input struct {
-		Name     string `json:"name" binding:"required"`
-		CellarID uint   `json:"cellar_id" binding:"required"`
-		Quantity int    `json:"quantity"`
-		Producer string `json:"producer"`
-		Year     int    `json:"year"`
-		Type     string `json:"type"`
-		Grape    string `json:"grape"`
-		Rating   int    `json:"rating"`
-		Notes    string `json:"notes"`
-		ImageURL string `json:"image_url"`
+		Name        string `json:"name" binding:"required"`
+		CellarID    uint   `json:"cellar_id" binding:"required"`
+		Quantity    int    `json:"quantity"`
+		Producer    string `json:"producer"`
+		Year        int    `json:"year"`
+		Type        string `json:"type"`
+		Grape       string `json:"grape"`
+		CriticScore int    `json:"critic_score"`
+		Description string `json:"description"`
+		ImageURL    string `json:"image_url"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -56,17 +56,17 @@ func AddWine(c *gin.Context) {
 	}
 
 	wine := models.Wine{
-		Name:     input.Name,
-		CellarID: input.CellarID,
-		Quantity: quantity,
-		Status:   "in_stock",
-		Producer: input.Producer,
-		Year:     input.Year,
-		Type:     input.Type,
-		Grape:    input.Grape,
-		Rating:   input.Rating,
-		Notes:    input.Notes,
-		ImageURL: input.ImageURL,
+		Name:        input.Name,
+		CellarID:    input.CellarID,
+		Quantity:    quantity,
+		Status:      "in_stock",
+		Producer:    input.Producer,
+		Year:        input.Year,
+		Type:        input.Type,
+		Grape:       input.Grape,
+		CriticScore: input.CriticScore,
+		Description: input.Description,
+		ImageURL:    input.ImageURL,
 	}
 
 	if err := repository.DB.Create(&wine).Error; err != nil {

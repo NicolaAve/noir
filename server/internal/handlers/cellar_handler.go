@@ -24,8 +24,9 @@ func CreateCellar(c *gin.Context) {
 	uid := uint(uidFloat)
 
 	var input struct {
-		Name     string `json:"name" binding:"required"`
-		Location string `json:"location"`
+		Name      string  `json:"name" binding:"required"`
+		Latitude  float64 `json:"latitude"`
+		Longitude float64 `json:"longitude"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -34,8 +35,9 @@ func CreateCellar(c *gin.Context) {
 	}
 
 	cellar := models.Cellar{
-		Name:     input.Name,
-		Location: input.Location,
+		Name:      input.Name,
+		Latitude:  input.Latitude,
+		Longitude: input.Longitude,
 	}
 
 	if err := repository.DB.Create(&cellar).Error; err != nil {
