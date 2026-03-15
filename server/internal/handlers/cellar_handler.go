@@ -16,6 +16,13 @@ func CreateCellar(c *gin.Context) {
 		return
 	}
 
+	uidFloat, ok := userID.(float64)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Errore interno: formato token corrotto"})
+		return
+	}
+	uid := uint(uidFloat)
+
 	var input struct {
 		Name     string `json:"name" binding:"required"`
 		Location string `json:"location"`
@@ -37,7 +44,8 @@ func CreateCellar(c *gin.Context) {
 	}
 
 	var user models.User
-	if err := repository.DB.First(&user, userID).Error; err == nil {
+
+	if err := repository.DB.First(&user, uid).Error; err == nil {
 		repository.DB.Model(&user).Association("Cellars").Append(&cellar)
 	}
 
@@ -55,9 +63,16 @@ func GetMyCellars(c *gin.Context) {
 		return
 	}
 
+	uidFloat, ok := userID.(float64)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Errore interno: formato token corrotto"})
+		return
+	}
+	uid := uint(uidFloat)
+
 	var user models.User
 
-	if err := repository.DB.Preload("Cellars").First(&user, userID).Error; err != nil {
+	if err := repository.DB.Preload("Cellars").First(&user, uid).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Errore durante il recupero delle cantine"})
 		return
 	}

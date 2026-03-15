@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"os"
 	"time"
 
@@ -11,7 +12,7 @@ import (
 func GenerateToken(userID uint) (string, error) {
 	secret := os.Getenv("JWT_SECRET")
 	if secret == "" {
-		secret = "fallback_secret_in_caso_di_emergenza"
+		return "", errors.New("configurazione server mancante: JWT_SECRET non definito")
 	}
 
 	claims := jwt.MapClaims{

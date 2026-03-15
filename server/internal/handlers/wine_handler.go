@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/NicolaAve/noir/server/internal/models"
 	"github.com/NicolaAve/noir/server/internal/repository"
@@ -16,7 +17,12 @@ func AddWine(c *gin.Context) {
 		return
 	}
 
-	uid := uint(userID.(float64))
+	uidFloat, ok := userID.(float64)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Errore interno: formato token corrotto"})
+		return
+	}
+	uid := uint(uidFloat)
 
 	var input struct {
 		Name     string `json:"name" binding:"required"`
@@ -81,9 +87,21 @@ func GetWinesByCellar(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Accesso negato: utente non identificato"})
 		return
 	}
-	uid := uint(userID.(float64))
 
-	cellarID := c.Param("id")
+	uidFloat, ok := userID.(float64)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Errore interno: formato token corrotto"})
+		return
+	}
+	uid := uint(uidFloat)
+
+	cellarIDStr := c.Param("id")
+
+	cellarID, err := strconv.ParseUint(cellarIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID cantina non valido. Deve essere un numero."})
+		return
+	}
 
 	var count int64
 	repository.DB.Table("user_cellars").Where("user_id = ? AND cellar_id = ?", uid, cellarID).Count(&count)
