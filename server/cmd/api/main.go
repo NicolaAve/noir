@@ -28,22 +28,10 @@ func main() {
 	protected := router.Group("/api")
 	protected.Use(middleware.RequireAuth())
 	{
-		protected.GET("/profile", func(c *gin.Context) {
-			userID, exists := c.Get("user_id")
-			if !exists {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossibile recuperare l'ID utente"})
-				return
-			}
-
-			c.JSON(http.StatusOK, gin.H{
-				"message": "Accesso verificato",
-				"user_id": userID,
-			})
-		})
-
 		protected.POST("/cellars", handlers.CreateCellar)
 		protected.POST("/wines", handlers.AddWine)
 
+		protected.GET("/profile", handlers.GetProfile)
 		protected.GET("/cellars", handlers.GetMyCellars)
 		protected.GET("/cellars/:id/wines", handlers.GetWinesByCellar)
 	}
